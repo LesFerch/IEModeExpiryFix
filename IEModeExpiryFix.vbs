@@ -19,6 +19,8 @@
 '3. Run this script
 'Repeat the above steps to add more IE Mode pages
 
+Version = "1.0.0"
+
 ClearAll = False 'Set to True to clear all existing IE Mode entries
 Backup = True 'Set to False for no backup
 Silent = False 'Change to True for no prompts
@@ -38,7 +40,6 @@ DateAdded = "10/28/2099 10:00:00 PM" 'Specify the date here (ensure format is co
 'FindReplace = "www.fait.it,www.fiat.it|www.ferari.it,www.ferrari.it"
 
 Const ForWriting = 2
-Const Ansi = 0
 Dim PrefsFile,MyLog,Data,OriginalData
 Z = VBCRLF
 ZZ = VBCRLF & VBCRLF
@@ -122,6 +123,7 @@ Sub BackupPrefsFile
   End If
 End Sub
 
+'Remove all IE Mode pages
 Sub ClearEntries
   FirstBlockEnd = InStr(Data,"user_list_data_1") + 18
   SecondBlockStart = InStr(Data,"}},""edge""")
