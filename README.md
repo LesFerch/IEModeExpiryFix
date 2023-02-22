@@ -7,4 +7,4 @@ You can download the script in **ZIP** format via the green **Code** button or d
 
 The script requires no modifications to set the expiry on URLs that are already in Edge's IE Mode list. See the comments in the script to see how to use it to add sites to the IE Mode list at the same time as setting their expiry.
 
-Note: The script only works with 100% local Edge profiles. It will not work if you are logged into Edge (i.e. synced profiles).
+**Note**: The script only works with 100% local Edge profiles. It will not work if you are logged into Edge (i.e. synced profiles).
