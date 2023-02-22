@@ -1,3 +1,6 @@
+'IEModeExpiryFix.vbs
+'https://github.com/LesFerch/IEModeExpiryFix
+
 'Sets the date added for all Edge IE Mode pages to any date you specify below
 'This causes the expiry dates to be the specified date plus 30 days
 'The default date added is a date in 2099, making the expiry a long way in the future
