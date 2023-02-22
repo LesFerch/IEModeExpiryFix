@@ -1,5 +1,5 @@
-# IEModeExpiryFix
-Set IE Mode pages to expire far in the future
+#IEModeExpiryFix
+##Set IE Mode pages to expire far in the future
 
 This VBS script sets your Edge IE Mode pages to a "Date added" in 2099 (can be edited to any date), which causes the expiry to also be in 2099. It also provides features for clearing all existing IE Mode pages, adding pages via the script, and searching and replacing strings in the Edge Preferences file. See the comments in the script for more details.
 
