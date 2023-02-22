@@ -13,3 +13,6 @@ The script requires no modifications to set the expiry on URLs that are already 
 As with any script, use at your own risk.
 
 **Note**: If you got the script from this repository, it's 100% clean, but you may find that some security software will detect it as potentially unwanted or potentially malicious. That's the nature of such software. It will err on the side of caution. If you encounter that situation, you will need to disable or, at least, dial-back the protection settings of your security software.
+
+**Note for system administrators**: If your computers are in Active Directory, please consider using the Enterprise Mode Site List instead of this script:
+[Enterprise Mode and the Enterprise Mode Site List](https://docs.microsoft.com/en-us/internet-explorer/ie11-deploy-guide/what-is-enterprise-mode)
