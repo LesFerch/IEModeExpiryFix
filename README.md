@@ -17,3 +17,7 @@ As with any script, use at your own risk.
 
 **Note for system administrators**: If your computers are in Active Directory, please consider using the Enterprise Mode Site List instead of this script:
 [Enterprise Mode and the Enterprise Mode Site List](https://docs.microsoft.com/en-us/internet-explorer/ie11-deploy-guide/what-is-enterprise-mode)
+
+\
+\
+[![image](https://user-images.githubusercontent.com/79026235/153264696-8ec747dd-37ec-4fc1-89a1-3d6ea3259a95.png)](https://github.com/LesFerch/IEModeExpiryFix)
