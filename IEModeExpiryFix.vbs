@@ -168,15 +168,10 @@ End Sub
 Sub RemoveEntries
   For i = 0 To UBound(aRemovePages)
     URL = FixURL(aRemovePages(i))
-    S1 = Instr(Data,"{""" & URL & """:{""date_added")
-    S2 = Instr(Data,",""" & URL & """:{""date_added")
+    S1 = Instr(Data,"""" & URL & """:{""date_added")
     If S1>0 Then
       E1 = InStr(S1,Data,"}")
-      Data = Left(Data,S1) & Mid(Data,E1 + 1)
-    End If
-    If S2>0 Then
-      E2 = InStr(S2,Data,"}")
-      Data = Left(Data,S2) & Mid(Data,E2 + 1)
+      Data = Left(Data,S1 - 1) & Mid(Data,E1 + 1)
     End If
     Data = Replace(Data,"{,","{")
     Data = Replace(Data,",}","}")
