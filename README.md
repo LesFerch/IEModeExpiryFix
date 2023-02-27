@@ -19,7 +19,7 @@ For those who care about the technical details, the VBScript version makes all t
 
 The script requires no modifications to set the expiry on URLs that are already in Edge's IE Mode list.
 
-To use it, first ensure that you are NOT logged into Edge (the script will not work with synced profiles). Then close Edge (the script will forcefully close Edge if it's still running). Then, just download and unzip the file and either double-click IEModeExpiryFix.vbs or right-click IEModeExpiryFix.ps1 and select "Run with PowerShell".
+To use it, first ensure that you are NOT logged into Edge (the script will not work with synced profiles). Then close Edge (the script will forcefully close Edge if it's still running). Then, just download and unzip the file and either double-click **IEModeExpiryFix.vbs** or right-click **IEModeExpiryFix.ps1** and select "Run with PowerShell".
 
 See the comments in the script to see how to modify it to add sites to the IE Mode list at the same time as setting their expiry.
 
