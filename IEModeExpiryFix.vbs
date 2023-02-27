@@ -1,9 +1,9 @@
 'IEModeExpiryFix.vbs
 'https://lesferch.github.io/IEModeExpiryFix/
 
-'Sets the date added for all Edge IE Mode pages to any date you specify below
-'This causes the expiry dates to be the specified date plus 30 days
-'The default date added is a date in 2099, making the expiry a long way in the future
+'Sets the date added for all Edge IE Mode pages to any date you specify below.
+'This causes the expiry dates to be the specified date plus 30 days.
+'The default date added is a date in 2099, making the expiry a long way in the future.
 
 'This script only works with completely local Edge profiles. It will not work if Edge is signed-in.
 
@@ -14,41 +14,54 @@
 'https://docs.microsoft.com/en-us/internet-explorer/ie11-deploy-guide/what-is-enterprise-mode
 
 'How to use:
-'1. Add your IE Mode pages in Microsoft Edge (or add them to the AddSites variable below)
+
+'1. Add your IE Mode pages in Microsoft Edge (or add them to the AddPages variable below)
 '2. Close Microsoft Edge (if open)
 '3. Run this script
-'Repeat the above steps to add more IE Mode pages
 
-Version = "1.0.0"
+'Repeat the above steps to add more IE Mode pages.
 
-ClearAll = False 'Set to True to clear all existing IE Mode entries
-Backup = True 'Set to False for no backup
-Silent = False 'Change to True for no prompts
-ForceLowercase = True 'Force domain part of URL to be lowercase
-Setlocale("en-us") 'Do NOT change unless you change the date format for "DateAdded" below
-DateAdded = "10/28/2099 10:00:00 PM" 'Specify the date here (ensure format is consistent with "Setlocale")
+Version = "1.1.0"
 
-'To add sites, copy, uncomment and edit the AddSites line below. Separate each page entry with a |.
+RemoveAll = False 'Set to True to remove all existing IE Mode pages.
+Backup = True 'Set to False for no backup.
+Silent = False 'Change to True for no prompts and no report.
+ForceLowercase = True 'Force domain part of URL to be lowercase.
+Setlocale("en-us") 'Do NOT change unless you change the date format for "DateAdded" below.
+DateAdded = "10/28/2099 10:00:00 PM" 'Specify the date here (ensure format is consistent with "Setlocale").
+
+'To remove pages, copy, uncomment and edit the RemovePages line below. Separate each page entry with a |.
+'Entries must match the existing URL EXACTLY, including case and trailing slash (if any).
+
+'RemovePages = "http://www.example.com/|http://www.example.com/page.asp"
+
+'To add pages, copy, uncomment and edit the AddPages line below. Separate each page entry with a |.
 'Entries must end with a slash unless the URL ends with a file such as .html, .aspx, etc.
 'The domain part of the entry must be all lowercase.
-'Edge IE Mode will not accept URL parameters, so the script will trim URLs at the first "?" character 
-'AddSites = "http://www.fait.it/|http://www.ferari.it/"
+'Edge IE Mode will not accept URL parameters, so the script will trim URLs at the first "?" character.
+
+'AddPages = "http://www.fiat.it/|http://www.ferrari.it/|http://www.some.com/page.asp"
 
 'To find and replace any string in the Preferences file, copy, uncomment and edit the FindReplace line below.
-'Be very careful that you specify exact, unique, case-sensitive text! Use at your own risk!
 'Separate find and replace strings with a comma and separate each find/replace pair with a |.
-'FindReplace = "www.fait.it,www.fiat.it|www.ferari.it,www.ferrari.it"
+'Be very careful that you specify exact, unique, case-sensitive text! Use at your own risk!
+'Be careful not to generate duplicates by making an incorrect entry the same as an existing entry!
+'This feature operates on the whole file, not just the IE Mode pages section. You have been warned!
+'It's safer to use RemovePages with AddPages to fix an error. Use FindReplace as a last resort!
+
+'FindReplace = "www.oops.com,www.correct.com|www.oops.net,www.correct.net"
 
 Const ForWriting = 2
 Dim PrefsFile,MyLog,Data,OriginalData
 Z = VBCRLF
 ZZ = VBCRLF & VBCRLF
 
-'Convert AddSites and FindReplace lists to arrays"
-aAddSites = Split(AddSites,"|")
+'Convert variable lists to arrays
+aRemovePages = Split(RemovePages,"|")
+aAddPages = Split(AddPages,"|")
 aFindReplace = Split(FindReplace,"|")
 
-'Convert the date 
+'Convert the date
 Set oDateTime = CreateObject("WbemScripting.SWbemDateTime")
 Call oDateTime.SetVarDate(DateAdded,True)
 EdgeDateAdded = Left(oDateTime.GetFileTime,17)
@@ -58,18 +71,21 @@ Set oFSO = CreateObject("Scripting.FileSystemObject")
 
 CScript = InStr(LCase(WScript.FullName),"cscript")>0
 
+'Display list of actions to be performed
 If Not Silent And Not CScript Then
-  MC = "Clear all existing IE Mode pages." & ZZ
-  MA = "Add these URLs to IE Mode: " & Z & AddSites & ZZ
+  MC = "Remove ALL IE Mode pages." & ZZ
+  MD = "Remove these IE Mode pages: " & Z & RemovePages & ZZ
+  MA = "Add these IE Mode pages: " & Z & AddPages & ZZ
   MF = "Find and replace these strings: " & Z & FindReplace & ZZ
   MX = "Set all IE Mode pages to expire 30 days after: " & DateAdded & ZZ
   MB = "Create a Preferences backup file if any changes are made." & ZZ
   MS = "Skip any synced profiles (because Edge will reject edits)." & ZZ
   MK = "Kill any running MSEdge.exe tasks."
-  If ClearAll Then Msg = Msg & MC
-  If AddSites<>"" Then Msg = Msg & MA
+  If RemoveAll Then Msg = Msg & MC
+  If RemovePages<>"" And Not RemoveAll Then Msg = Msg & MD
+  If AddPages<>"" Then Msg = Msg & MA
   If FindReplace<>"" Then Msg = Msg & MF
-  If (Not ClearAll) Or AddSites<>"" Then Msg = Msg & MX
+  If (Not RemoveAll) Or AddPages<>"" Then Msg = Msg & MX
   If Backup Then Msg = Msg & MB
   Msg = Msg & MS & MK
   Response = MsgBox(Msg,VBOKCancel,"The following actions will be performed:")
@@ -83,11 +99,18 @@ LocalAppData = oWSH.ExpandEnvironmentStrings("%LocalAppData%")
 
 LogMsg "Profiles processed:"
 
-ProcessProfiles("Edge") 'For released Edge profile
-ProcessProfiles("Edge Beta") 'For Beta Edge profile
-ProcessProfiles("Edge Dev") 'For Dev Edge profile
-ProcessProfiles("Edge SxS") 'For Canary Edge profile
+ProcessProfiles("Edge") 'For released Edge profile.
+ProcessProfiles("Edge Beta") 'For Beta Edge profile.
+ProcessProfiles("Edge Dev") 'For Dev Edge profile.
+ProcessProfiles("Edge SxS") 'For Canary Edge profile.
 
+If Not Silent Then
+  WScript.Echo MyLog
+End If
+
+'End of main code. Subs and functions below.
+
+'Add a message to the MyLog variable
 Sub LogMsg(Msg)
   MyLog = MyLog & Msg & ZZ
 End Sub
@@ -130,7 +153,7 @@ Sub ClearEntries
   Data = Left(Data,FirstBlockEnd) & Mid(Data,SecondBlockStart)
 End Sub
 
-'Find and change every IE Mode page entry
+'Find and change every IE Mode page date
 Sub UpdateEntries
   StartPos = 1
   Do
@@ -141,21 +164,41 @@ Sub UpdateEntries
   Loop
 End Sub
 
-'Add any sites specified with the AddSites variable
+'Add any pages specified with the AddPages variable
+Sub RemoveEntries
+  For i = 0 To UBound(aRemovePages)
+    URL = FixURL(aRemovePages(i))
+    S1 = Instr(Data,"{""" & URL & """:{""date_added")
+    S2 = Instr(Data,",""" & URL & """:{""date_added")
+    If S1>0 Then
+      E1 = InStr(S1,Data,"}")
+      Data = Left(Data,S1) & Mid(Data,E1 + 1)
+    End If
+    If S2>0 Then
+      E2 = InStr(S2,Data,"}")
+      Data = Left(Data,S2) & Mid(Data,E2 + 1)
+    End If
+    Data = Replace(Data,"{,","{")
+    Data = Replace(Data,",}","}")
+    Data = Replace(Data,",,",",")
+  Next
+End Sub
+
+'Add any pages specified with the AddPages variable
 Sub AddEntries
-  For i = 0 To UBound(aAddSites)
-    AddSite = FixURL(aAddSites(i))
-    If Not BadURL(AddSite) Then
-      AddSite = FixURL(aAddSites(i))
+  For i = 0 To UBound(aAddPages)
+    URL = FixURL(aAddPages(i))
+    If Not BadURL(URL) Then
       If Instr(Data,"user_list_data_1")=0 Then Data = Replace(Data,"},""edge"":{",",""user_list_data_1"":{}},""edge"":{")
-      If Instr(Data,AddSite)=0 Then Data = Replace(Data,"""user_list_data_1"":{","""user_list_data_1"":{""" & AddSite & """:{""date_added"":""" & EdgeDateAdded & """,""engine"":2,""visits_after_expiration"":0},")
-      Data = Replace(Data,"},}},","}}},")
+      If Instr(Data,URL)=0 Then Data = Replace(Data,"""user_list_data_1"":{","""user_list_data_1"":{""" & URL & """:{""date_added"":""" & EdgeDateAdded & """,""engine"":2,""visits_after_expiration"":0},")
+      Data = Replace(Data,",}","}")
     End If
   Next
 End Sub
 
 'Find and replace strings specified with the FindReplace variable
-Sub FindReplaceEntries
+'This feature operates on the whole file, not just the IE Mode pages section!
+Sub FindReplaceAnyString
   For i = 0 To UBound(aFindReplace)
     aFindReplacePair = Split(aFindReplace(i),",")
     Data = Replace(Data,aFindReplacePair(0),aFindReplacePair(1))
@@ -177,13 +220,18 @@ Sub EditProfile
 
   OriginalData = Data
 
-  If ClearAll Then Call ClearEntries Else UpdateEntries
+  If RemoveAll Then
+    ClearEntries
+  Else
+    RemoveEntries
+    UpdateEntries
+  End If
 
   AddEntries
 
-  FindReplaceEntries
+  FindReplaceAnyString
   
-  'Set "Allow sites to be reloaded in Internet Explorer mode" to "Allow"
+  'Set "Allow pages to be reloaded in Internet Explorer mode" to "Allow"
   Data = Replace(Data,"{""ie_user""","{""enabled_state"":1,""ie_user""")
   Data = Replace(Data,"{""enabled_state"":0,""ie_user""","{""enabled_state"":1,""ie_user""")
   Data = Replace(Data,"{""enabled_state"":2,""ie_user""","{""enabled_state"":1,""ie_user""")
@@ -198,6 +246,7 @@ Sub EditProfile
   End If
 End Sub
 
+'Process profiles in all known Edge profile folders
 Sub ProcessProfiles(ProfileFolder)
   EdgeData = LocalAppData & "\Microsoft\" & ProfileFolder & "\User Data\"
   If oFSO.FolderExists(EdgeData) Then
@@ -207,7 +256,3 @@ Sub ProcessProfiles(ProfileFolder)
     Next
   End If
 End Sub
-
-If Not Silent Then
-  WScript.Echo MyLog
-End If
