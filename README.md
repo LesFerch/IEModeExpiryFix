@@ -9,7 +9,7 @@
 
 This script sets your Edge **IE Mode** pages to a "Date added" in 2099 (can be edited to any date), which causes the expiry to also be in 2099. It also provides features for clearing all existing IE Mode pages, adding pages via the script, removing individual pages via the script, and searching and replacing strings in the Edge Preferences file. See the comments in the script for more details.
 
-This package now includes both VBScript and PowerShell versions of the script. Use whichever one you like.
+This package now includes both VBScript and PowerShell versions. Use whichever one you like.
 
 The VBScript version is faster and can be double-clicked to run. It will work for anyone, unless VBScript is blocked by security polices on your computer.
 
