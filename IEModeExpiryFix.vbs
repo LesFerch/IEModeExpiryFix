@@ -149,8 +149,10 @@ End Sub
 'Remove all IE Mode pages
 Sub ClearEntries
   FirstBlockEnd = InStr(Data,"user_list_data_1") + 18
-  SecondBlockStart = InStr(Data,"}},""edge""")
-  Data = Left(Data,FirstBlockEnd) & Mid(Data,SecondBlockStart)
+  If FirstBlockEnd>18 Then
+    SecondBlockStart = InStr(Data,"}},""edge""")
+    Data = Left(Data,FirstBlockEnd) & Mid(Data,SecondBlockStart)
+  End If
 End Sub
 
 'Find and change every IE Mode page date
