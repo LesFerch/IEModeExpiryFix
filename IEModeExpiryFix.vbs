@@ -21,7 +21,7 @@
 
 'Repeat the above steps to add more IE Mode pages.
 
-Version = "1.1.0"
+Version = "1.1.1"
 
 RemoveAll = False 'Set to True to remove all existing IE Mode pages.
 Backup = True 'Set to False for no backup.
