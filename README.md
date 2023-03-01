@@ -2,7 +2,7 @@
 
 [![image](https://user-images.githubusercontent.com/79026235/152910441-59ba653c-5607-4f59-90c0-bc2851bf2688.png)Download the zip file](https://github.com/LesFerch/IEModeExpiryFix/archive/refs/heads/main.zip)
 
-[**Version: 1.1.0**](./VersionHistory.md)\
+[**Version: 1.1.1**](./VersionHistory.md)\
 **Last updated: 2023-02-27**
 
 ## Set IE Mode pages to expire far in the future
