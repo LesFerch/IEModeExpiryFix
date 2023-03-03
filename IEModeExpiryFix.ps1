@@ -26,10 +26,11 @@ $Backup = $True #Set to False for no backup.
 $Silent = $False #Change to True for no prompts and no report.
 $ForceLowercase = $True #Force domain part of URL to be lowercase.
 Set-Culture en-US #Do NOT change unless you change the date format for "DateAdded" below.
-$DateAdded = '10/28/2099 10:00:00 PM' #Specify the date here (ensure format is consistent with "Set-Culture").
-$RemovePages = ''
-$AddPages = ''
-$FindReplace = ''
+$DateAdded = '10/28/2099 10:00:00 PM' #Specify the date here (ensure format is consistent with "Setlocale").
+
+$RemovePages = '' #Don't touch this!
+$AddPages = '' #Don't touch this!
+$FindReplace = '' #Don't touch this!
 
 #To remove pages, copy, uncomment and edit the $RemovePages line below. Separate each page entry with a |.
 #Entries must match the existing URL EXACTLY, including case and trailing slash (if any).
