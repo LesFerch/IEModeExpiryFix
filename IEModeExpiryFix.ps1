@@ -100,7 +100,7 @@ If (-Not $Silent) {
 }
 
 #Clear the prompt line
-Clear-Lines 2
+If (-Not $Silent) {Clear-Lines 2}
 
 #Edge must be closed to modify the Preferences file
 Stop-Process -Force -ErrorAction SilentlyContinue -ProcessName MSEdge
