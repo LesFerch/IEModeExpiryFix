@@ -19,6 +19,10 @@
 
 #Repeat the above steps to add more IE Mode pages
 
+Param (
+  $INIFile = ''
+)
+
 $Version = '1.1.1'
 
 $RemoveAll = $False #Set to True to remove all existing IE Mode pages.
@@ -52,6 +56,50 @@ $FindReplace = '' #Don't touch this!
 #It's safer to use $RemovePages and $AddPages to correct an error! Use FindReplace as a last resort!
 
 #$FindReplace = 'www.oops.com,www.correct.com|www.oops.net,www.correct.net'
+
+#Used to Read $INIfile contents
+Function Get-IniContent ($FilePath) {
+  $ini = @{}
+  Switch -regex -file $FilePath {
+    '^\[(.+)\]' # Section
+    {
+      $section = $matches[1]
+      $ini[$section] = @{}
+    }
+    '(.+?)\s*=(.*)' # Key
+    {
+      $name,$value = $matches[1..2]
+      $value = $value.Trim().ToLower()
+      If (($value -eq '0') -Or ($value -eq 'false') -Or ($value -eq '$false')) {$value = $False}
+      If (($value -eq '1') -Or ($value -eq 'true') -Or ($value -eq '$true')) {$value = $True}
+      $ini[$section][$name] = $value
+    }
+  }
+  Return $ini
+}
+
+#Read variables from $INIFile (if provided on command ine)
+If ($INIFile -ne '') {
+  Set-Location $PSScriptRoot
+  If (-Not(Test-Path -Path $INIFile)) {
+    Write-Host `n"File not found: $INIFile"`n
+    Read-Host 'Press Enter to continue'
+    Exit
+  }
+  $iniContent = Get-INIContent $INIFile
+  $RemoveAll = $iniContent['Options']['RemoveAll']
+  $Backup = $iniContent['Options']['Backup']
+  $Silent = $iniContent['Options']['Silent']
+  $RemovePages = $iniContent['Content']['RemovePages']
+  $AddPages = $iniContent['Content']['AddPages']
+  $FindReplace = $iniContent['Content']['FindReplace']
+  If ($RemoveAll -eq $Null) {$RemoveAll = $False}
+  If ($Backup -eq $Null) {$Backup = $True}
+  If ($Silent -eq $Null) {$Silent = $False}
+  If ($RemovePages -eq $Null) {$RemovePages = ''}
+  If ($AddPages -eq $Null) {$AddPages = ''}
+  If ($FindReplace -eq $Null) {$FindReplace = ''}
+}
 
 #Convert variable lists to arrays
 $aRemovePages = @()
