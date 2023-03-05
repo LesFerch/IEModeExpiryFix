@@ -19,6 +19,8 @@
 
 #Repeat the above steps to add more IE Mode pages
 
+#Variables are read from an INI file if the INI file name is provided as a parameter on the command line.
+#INI file settings override settings supplied directly in the script.
 Param (
   $INIFile = ''
 )
