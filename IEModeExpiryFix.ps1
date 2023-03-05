@@ -69,9 +69,10 @@ Function Get-IniContent ($FilePath) {
     '(.+?)\s*=(.*)' # Key
     {
       $name,$value = $matches[1..2]
-      $value = $value.Trim().ToLower()
-      If (($value -eq '0') -Or ($value -eq 'false') -Or ($value -eq '$false')) {$value = $False}
-      If (($value -eq '1') -Or ($value -eq 'true') -Or ($value -eq '$true')) {$value = $True}
+      $value = $value.Trim()
+      $v = $value.ToLower()
+      If (($v -eq '0') -Or ($v -eq 'false') -Or ($v -eq '$false')) {$value = $False}
+      If (($v -eq '1') -Or ($v -eq 'true') -Or ($v -eq '$true')) {$value = $True}
       $ini[$section][$name] = $value
     }
   }
