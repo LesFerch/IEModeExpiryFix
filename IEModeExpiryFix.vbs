@@ -28,7 +28,7 @@ Backup = True 'Set to False for no backup.
 Silent = False 'Change to True for no prompts and no report.
 ForceLowercase = True 'Force domain part of URL to be lowercase.
 Setlocale("en-us") 'Do NOT change unless you change the date format for "DateAdded" below.
-DateAdded = "10/28/2099 10:00:00 PM" 'Specify the date here (ensure format is consistent with "Setlocale").
+DateAdded = "10/28/2099 10:00:00 PM" 'Specify the date here (ensure format is consistent with "Set-Culture").
 
 'To remove pages, copy, uncomment and edit the RemovePages line below. Separate each page entry with a |.
 'Entries must match the existing URL EXACTLY, including case and trailing slash (if any).
