@@ -32,7 +32,7 @@ $Backup = $True #Set to False for no backup.
 $Silent = $False #Change to True for no prompts and no report.
 $ForceLowercase = $True #Force domain part of URL to be lowercase.
 Set-Culture en-US #Do NOT change unless you change the date format for "DateAdded" below.
-$DateAdded = '10/28/2099 10:00:00 PM' #Specify the date here (ensure format is consistent with "Setlocale").
+$DateAdded = '10/28/2099 10:00:00 PM' #Specify the date here (ensure format is consistent with "Set-Culture").
 
 $RemovePages = '' #Don't touch this!
 $AddPages = '' #Don't touch this!
@@ -93,12 +93,14 @@ If ($INIFile -ne '') {
   $RemoveAll = $iniContent['Options']['RemoveAll']
   $Backup = $iniContent['Options']['Backup']
   $Silent = $iniContent['Options']['Silent']
+  $DateAdded = $iniContent['Content']['DateAdded']
   $RemovePages = $iniContent['Content']['RemovePages']
   $AddPages = $iniContent['Content']['AddPages']
   $FindReplace = $iniContent['Content']['FindReplace']
   If ($RemoveAll -eq $Null) {$RemoveAll = $False}
   If ($Backup -eq $Null) {$Backup = $True}
   If ($Silent -eq $Null) {$Silent = $False}
+  If ($DateAdded -eq $Null) {$DateAdded = '10/28/2099 10:00:00 PM'}
   If ($RemovePages -eq $Null) {$RemovePages = ''}
   If ($AddPages -eq $Null) {$AddPages = ''}
   If ($FindReplace -eq $Null) {$FindReplace = ''}
