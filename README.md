@@ -28,7 +28,7 @@ See the comments in the script to see how to modify it to add sites to the IE Mo
 **Note**: The script will create a backup of the Edge Preferences file whenever it makes a change, but please test carefully (especially if deploying to multiple users). 
 As with any script, use at your own risk.
 
-**Note**: If you got the script from this repository, it's 100% clean, but you may find that some security software will detect it as potentially unwanted or potentially malicious. That's the nature of such software. It will err on the side of caution. If you encounter that situation, you will need to disable or, at least, dial-back the protection settings of your security software.
+**Note**: If you got the script from this repository, it's 100% clean, but you may find that some security software will falsely detect it as potentially unwanted or potentially malicious. That's the nature of such software. It will err on the side of caution. If you encounter that situation, you will need to disable or, at least, dial-back the protection settings of your security software.
 
 **Note for system administrators**: If your computers are in Active Directory, please consider using the Enterprise Mode Site List instead of this script:
 [Enterprise Mode and the Enterprise Mode Site List](https://docs.microsoft.com/en-us/internet-explorer/ie11-deploy-guide/what-is-enterprise-mode)
