@@ -259,7 +259,13 @@ Function EditProfile {
 
   #Read contents of Edge Preferences file into a variable
   $Script:Data = (Get-Content -Raw $PrefsFile).Trim()
-  $oData = $Data | ConvertFrom-JSON
+  $Option = $Null
+  If ($PSVersionTable.PSVersion.Major -ge 6) {
+    $oData = $Data | ConvertFrom-JSON -AsHashTable -ErrorAction SilentlyContinue
+  }
+  Else {
+    $oData = $Data | ConvertFrom-JSON -ErrorAction SilentlyContinue
+  }
 
   LogMsg $PrefsFile
   
