@@ -25,7 +25,7 @@ Param (
   $INIFile = ''
 )
 
-$Version = '1.1.1'
+$Version = '1.1.2'
 
 $RemoveAll = $False #Set to True to remove all existing IE Mode pages.
 $Backup = $True #Set to False for no backup.
@@ -259,7 +259,6 @@ Function EditProfile {
 
   #Read contents of Edge Preferences file into a variable
   $Script:Data = (Get-Content -Raw $PrefsFile).Trim()
-  $Option = $Null
   If ($PSVersionTable.PSVersion.Major -ge 6) {
     $oData = $Data | ConvertFrom-JSON -AsHashTable -ErrorAction SilentlyContinue
   }
