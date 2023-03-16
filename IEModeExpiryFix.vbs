@@ -21,7 +21,7 @@
 
 'Repeat the above steps to add more IE Mode pages.
 
-Version = "1.1.1"
+Version = "1.1.2"
 
 RemoveAll = False 'Set to True to remove all existing IE Mode pages.
 Backup = True 'Set to False for no backup.
@@ -187,7 +187,7 @@ Sub AddEntries
     URL = FixURL(aAddPages(i))
     If Not BadURL(URL) Then
       If Instr(Data,"user_list_data_1")=0 Then Data = Replace(Data,"},""edge"":{",",""user_list_data_1"":{}},""edge"":{")
-      If Instr(Data,URL)=0 Then Data = Replace(Data,"""user_list_data_1"":{","""user_list_data_1"":{""" & URL & """:{""date_added"":""" & EdgeDateAdded & """,""engine"":2,""visits_after_expiration"":0},")
+      If Instr(Data,"""" & URL & """:{""date_added")=0 Then Data = Replace(Data,"""user_list_data_1"":{","""user_list_data_1"":{""" & URL & """:{""date_added"":""" & EdgeDateAdded & """,""engine"":2,""visits_after_expiration"":0},")
       Data = Replace(Data,",}","}")
     End If
   Next
