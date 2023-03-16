@@ -1,6 +1,8 @@
 ## 1.1.2
 
-Added -AsHashTable for PowerShell 6 and -ErrorAction SilentlyContinue for PowerShell 5 for (probably rare) situation of two keys in Preferences JSON file being identical other than case. No change to the VBS script, so it remains at version 1.1.1.
+Added -AsHashTable for PowerShell 6 and -ErrorAction SilentlyContinue for PowerShell 5 for (probably rare) situation of two keys in Preferences JSON file being identical other than case.
+
+Fixed bug in IEModeExpiryFix.vbs that caused AddPages to not work for a URL that was already located elsewhere in the Preferences file.
 
 ## 1.1.1
 
