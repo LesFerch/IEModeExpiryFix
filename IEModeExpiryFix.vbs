@@ -166,7 +166,7 @@ Sub UpdateEntries
   Loop
 End Sub
 
-'Add any pages specified with the AddPages variable
+'Remove any pages specified with the RemovePages variable
 Sub RemoveEntries
   For i = 0 To UBound(aRemovePages)
     URL = FixURL(aRemovePages(i))
