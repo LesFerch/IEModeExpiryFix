@@ -57,9 +57,9 @@ Z = VBCRLF
 ZZ = VBCRLF & VBCRLF
 
 'Convert variable lists to arrays
-aRemovePages = Split(RemovePages,"|")
-aAddPages = Split(AddPages,"|")
-aFindReplace = Split(FindReplace,"|")
+aRemovePages = Split(RemovePages,"|") 'Do NOT edit this!
+aAddPages = Split(AddPages,"|") 'Do NOT edit this!
+aFindReplace = Split(FindReplace,"|") 'Do NOT edit this!
 
 'Convert the date
 Set oDateTime = CreateObject("WbemScripting.SWbemDateTime")

@@ -54,6 +54,8 @@ $FindReplace = '' #Don't touch this!
 #$FindReplace = 'www.oops.com,www.correct.com|www.oops.net,www.correct.net'
 
 #Convert variable lists to arrays
+#Do NOT edit any of the variables below!
+#Edits are done using the commented variables above!
 $aRemovePages = @()
 $aAddPages = @()
 $aFindReplace = @()
