@@ -1,3 +1,7 @@
+## 1.1.3
+
+Added the LaunchIE.vbs script to provide an alternative solution. See the Readme for more details.
+
 ## 1.1.2
 
 Added -AsHashTable for PowerShell 6 and -ErrorAction SilentlyContinue for PowerShell 5 for (probably rare) situation of two keys in Preferences JSON file being identical other than case.
