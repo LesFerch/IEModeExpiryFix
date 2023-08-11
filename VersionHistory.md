@@ -1,6 +1,6 @@
 ## 1.1.3
 
-Added the LaunchIE.vbs script to provide an alternative solution. See the Readme for more details.
+Added the LaunchIE.vbs and LaunchIE.js scripts to provide an alternative solution. See the Readme for more details.
 
 ## 1.1.2
 
