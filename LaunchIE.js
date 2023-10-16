@@ -1,3 +1,3 @@
-var oIE = new ActiveXObject("InternetExplorer.Application");
+oIE = new ActiveXObject("InternetExplorer.Application");
 oIE.Visible = true;
-oIE.Navigate("about:blank");
+oIE.Navigate("example.com");

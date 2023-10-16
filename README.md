@@ -30,12 +30,15 @@ See the comments in the script to see how to modify it to add sites to the IE Mo
 **Note**: The script will create a backup of the Edge Preferences file whenever it makes a change, but please test carefully (especially if deploying to multiple users). 
 As with any script, use at your own risk.
 
-**Note**: If you cannot use the IEModeExpiryFix script, an alternative solution is to load the web page directly with Internet Explorer using the included **LaunchIE.vbs** or **LaunchIE.js** script. Edit the file using a text editor, such as Notepad, and change the string "about:blank" to the URL of the web page you want to use in IE. Make one copy of the script for each site that you wish to load with IE. There is no more risk using a web page this way as there is accessing the page using Edge IE Mode. EdgeIE Mode actually runs IE to display the page, so it's really all the same, other than the annoying expiry date. What you should not do is use IE as a general purpose browser. IE (or Edge IE Mode) should only be used for specific pages, that you trust, that only work in IE.
-
 **Note**: If you got the script from this repository, it's 100% clean, but you may find that some security software will falsely detect it as potentially unwanted or potentially malicious. That's the nature of such software. It will err on the side of caution. If you encounter that situation, you will need to disable or, at least, dial-back the protection settings of your security software.
 
 **Note for system administrators**: If your computers are in Active Directory, please consider using the Enterprise Mode Site List instead of this script:
 [Enterprise Mode and the Enterprise Mode Site List](https://docs.microsoft.com/en-us/internet-explorer/ie11-deploy-guide/what-is-enterprise-mode)
 
+## Alternative Solution
+
+You can also load web pages directly with Internet Explorer using **[LaunchIE](https://lesferch.github.io/LaunchIE/)** or by using one of the included launcher scripts (LaunchIE.vbs or LaunchIE.js).
+
+There is no more risk using a web page via the launcher as there is accessing the page using Edge IE Mode. Edge IE Mode actually runs IE in the background, so it's really all the same, other than the annoying expiry date. What you should NOT do is use IE as a general purpose browser. IE (or Edge IE Mode) should only be used for specific pages, that you trust, that only work in IE.
 
 [![image](https://user-images.githubusercontent.com/79026235/153264696-8ec747dd-37ec-4fc1-89a1-3d6ea3259a95.png)](https://github.com/LesFerch/IEModeExpiryFix)
