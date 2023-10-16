@@ -107,6 +107,8 @@ If ($INIFile -ne '') {
 }
 
 #Convert variable lists to arrays
+#Do NOT edit any of the variables below!
+#Edits are done using the commented variables above!
 $aRemovePages = @()
 $aAddPages = @()
 $aFindReplace = @()
