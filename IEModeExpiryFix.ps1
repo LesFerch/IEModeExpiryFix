@@ -19,13 +19,14 @@
 
 #Repeat the above steps to add more IE Mode pages
 
-$Version = '1.1.2'
+$Version = '1.1.3'
 
 $RemoveAll = $False #Set to True to remove all existing IE Mode pages.
 $Backup = $True #Set to False for no backup.
 $Silent = $False #Change to True for no prompts and no report.
 $ForceLowercase = $True #Force domain part of URL to be lowercase.
-Set-Culture en-US #Do NOT change unless you change the date format for "DateAdded" below.
+$currentThread = [System.Threading.Thread]::CurrentThread
+$currentThread.CurrentCulture = "en-US" #Do NOT change unless you change the date format for "DateAdded" below.
 $DateAdded = '10/28/2099 10:00:00 PM' #Specify the date here (ensure format is consistent with "Set-Culture").
 
 $RemovePages = '' #Don't touch this!
