@@ -1,6 +1,6 @@
 # IEModeExpiryFix
 
-[![image](https://user-images.githubusercontent.com/79026235/152910441-59ba653c-5607-4f59-90c0-bc2851bf2688.png)Download the zip file](https://github.com/LesFerch/IEModeExpiryFix/archive/refs/heads/main.zip)
+[![image](https://github.com/LesFerch/WinSetView/assets/79026235/0188480f-ca53-45d5-b9ff-daafff32869e)Download the zip file](https://github.com/LesFerch/IEModeExpiryFix/archive/refs/heads/main.zip)
 
 [**Version: 1.1.3**](./VersionHistory.md)\
 **Last updated: 2023-08-09**
@@ -41,4 +41,4 @@ You can also load web pages directly with Internet Explorer using **[LaunchIE](h
 
 There is no more risk using a web page via the launcher as there is accessing the page using Edge IE Mode. Edge IE Mode actually runs IE in the background, so it's really all the same, other than the annoying expiry date. What you should NOT do is use IE as a general purpose browser. IE (or Edge IE Mode) should only be used for specific pages, that you trust, that only work in IE.
 
-[![image](https://user-images.githubusercontent.com/79026235/153264696-8ec747dd-37ec-4fc1-89a1-3d6ea3259a95.png)](https://github.com/LesFerch/IEModeExpiryFix)
+[![image](https://github.com/LesFerch/WinSetView/assets/79026235/63b7acbc-36ef-4578-b96a-d0b7ea0cba3a)](https://github.com/LesFerch/IEModeExpiryFix)
