@@ -1,3 +1,11 @@
+## 1.2.0
+
+Added the `AllUsers` varaiable and associated code to process all user profiles.
+
+Added option to set script defaults via an `INI` file. 
+
+Improved error checks.
+
 ## 1.1.3
 
 Added the LaunchIE.vbs and LaunchIE.js scripts to provide an alternative solution. See the Readme for more details.
