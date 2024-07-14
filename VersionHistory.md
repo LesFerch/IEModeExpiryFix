@@ -1,6 +1,6 @@
 ## 1.2.0
 
-Added the `AllUsers` varaiable and associated code to process all user profiles.
+Added the `AllUsers` variable and associated code to process all user profiles.
 
 Added option to set script defaults via an `INI` file. 
 
