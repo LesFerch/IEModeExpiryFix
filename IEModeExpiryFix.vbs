@@ -15,17 +15,22 @@
 
 'How to use:
 
-'1. Add your IE Mode pages in Microsoft Edge (or add them to the AddPages variable below)
+'1. Add your IE Mode pages in Microsoft Edge
+'   (or add them to the $AddPages variable below or add them via an INI file)
 '2. Close Microsoft Edge (if open)
 '3. Run this script
 
 'Repeat the above steps to add more IE Mode pages.
 
-Version = "1.1.2"
+'Variables are read from an INI file if the INI file name is provided as a parameter on the command line.
+'INI file settings override settings supplied directly in the script.
 
+Version = "1.2.0"
+
+Silent = False 'Change to True for no prompts and no report.
+AllUsers = False 'Set to True to process all user folders (typically used with SYSTEM account and $Silent = $True).
 RemoveAll = False 'Set to True to remove all existing IE Mode pages.
 Backup = True 'Set to False for no backup.
-Silent = False 'Change to True for no prompts and no report.
 ForceLowercase = True 'Force domain part of URL to be lowercase.
 Setlocale("en-us") 'Do NOT change unless you change the date format for "DateAdded" below.
 DateAdded = "10/28/2099 10:00:00 PM" 'Specify the date here (ensure format is consistent with "Setlocale").
@@ -56,6 +61,29 @@ Dim PrefsFile,MyLog,Data,OriginalData
 Z = VBCRLF
 ZZ = VBCRLF & VBCRLF
 
+Set oWSH = CreateObject("WScript.Shell")
+Set oFSO = CreateObject("Scripting.FileSystemObject")
+Set oSettings = CreateObject("Scripting.Dictionary")
+
+'Get settings from INI file if specified on the command line.
+If WScript.Arguments.Count>0 Then INIFile = WScript.Arguments.Item(0)
+oWSH.CurrentDirectory = oFSO.GetParentFolderName(WScript.ScriptFullName)
+If INIFile<>"" Then
+  If Not oFSO.FileExists(INIFile) Then
+    LogMsg "File not found: " & INIFile
+    ExitScript
+  End If
+  INI2Dict
+  If oSettings.Exists("[Options]Silent") Then Silent = (oSettings.Item("[Options]Silent")=1)
+  If oSettings.Exists("[Options]AllUsers") Then AllUsers = (oSettings.Item("[Options]AllUsers")=1)
+  If oSettings.Exists("[Options]RemoveAll") Then RemoveAll = (oSettings.Item("[Options]RemoveAll")=1)
+  If oSettings.Exists("[Options]Backup") Then Backup = (oSettings.Item("[Options]Backup")=1)
+  If oSettings.Exists("[Content]DateAdded") Then DateAdded = oSettings.Item("[Content]DateAdded")
+  If oSettings.Exists("[Content]RemovePages") Then RemovePages = oSettings.Item("[Content]RemovePages")
+  If oSettings.Exists("[Content]AddPages") Then AddPages = oSettings.Item("[Content]AddPages")
+  If oSettings.Exists("[Content]FindReplace") Then FindReplace = oSettings.Item("[Content]FindReplace")
+End If
+
 'Convert variable lists to arrays
 aRemovePages = Split(RemovePages,"|") 'Do NOT edit this!
 aAddPages = Split(AddPages,"|") 'Do NOT edit this!
@@ -65,9 +93,6 @@ aFindReplace = Split(FindReplace,"|") 'Do NOT edit this!
 Set oDateTime = CreateObject("WbemScripting.SWbemDateTime")
 Call oDateTime.SetVarDate(DateAdded,True)
 EdgeDateAdded = Left(oDateTime.GetFileTime,17)
-
-Set oWSH = CreateObject("WScript.Shell")
-Set oFSO = CreateObject("Scripting.FileSystemObject")
 
 CScript = InStr(LCase(WScript.FullName),"cscript")>0
 
@@ -99,16 +124,28 @@ LocalAppData = oWSH.ExpandEnvironmentStrings("%LocalAppData%")
 
 LogMsg "Profiles processed:"
 
-ProcessProfiles("Edge") 'For released Edge profile.
-ProcessProfiles("Edge Beta") 'For Beta Edge profile.
-ProcessProfiles("Edge Dev") 'For Dev Edge profile.
-ProcessProfiles("Edge SxS") 'For Canary Edge profile.
-
-If Not Silent Then
-  WScript.Echo MyLog
+If AllUsers Then
+  usersPath = oWSH.RegRead("HKLM\Software\Microsoft\Windows NT\CurrentVersion\ProfileList\ProfilesDirectory")
+  usersPath = oWSH.ExpandEnvironmentStrings(usersPath)
+  Set oFolder = oFSO.GetFolder(usersPath)
+  For Each oFolder In oFolder.SubFolders
+    Folder = oFSO.GetAbsolutePathName(oFolder)
+    ProcessUserProfiles(Folder)
+  Next
+Else
+  ProcessUserProfiles(oWSH.ExpandEnvironmentStrings("%UserProfile%"))
 End If
 
+ExitScript
+
 'End of main code. Subs and functions below.
+
+Sub ExitScript
+  If Not Silent Then
+    WScript.Echo MyLog
+  End If
+  WScript.Quit
+End Sub
 
 'Add a message to the MyLog variable
 Sub LogMsg(Msg)
@@ -245,11 +282,41 @@ End Sub
 
 'Process profiles in all known Edge profile folders
 Sub ProcessProfiles(ProfileFolder)
-  EdgeData = LocalAppData & "\Microsoft\" & ProfileFolder & "\User Data\"
+  EdgeData = ProfileFolder & "\User Data\"
   If oFSO.FolderExists(EdgeData) Then
     For Each oFolder In oFSO.GetFolder(EdgeData).SubFolders
       PrefsFile = oFolder.Path & "\Preferences"
       If oFSO.FileExists(PrefsFile) Then EditProfile
     Next
+  End If
+End Sub
+
+'Process profiles for all Edge versions
+Sub ProcessUserProfiles(Path)
+  Path = Path & "\AppData\Local\Microsoft"
+  ProcessProfiles(Path & "\Edge") 'For released Edge profile.
+  ProcessProfiles(Path & "\Edge Beta") 'For Beta Edge profile.
+  ProcessProfiles(Path & "\Edge Dev") 'For Dev Edge profile.
+  ProcessProfiles(Path & "\Edge SxS") 'For Canary Edge profile.
+End Sub
+
+'Read INI file into a dictionary
+Sub Ini2Dict
+  If oFSO.FileExists(INIFile) Then 
+    Set oFile = oFSO.OpenTextFile(INIFile)
+    Do Until oFile.AtEndOfStream
+      Line = Trim(oFile.ReadLine)
+      If Line<>"" And Left(Line,1)<>";" Then
+        If Left(Line,1)="[" Then
+          Section = Line
+        Else
+          ArrLine = Split(Line,"=")
+          If UBound(Arrline)=1 Then
+            oSettings.Add Section & Trim(ArrLine(0)),Trim(ArrLine(1))
+          End If
+        End If
+      End If
+    Loop
+    oFile.Close
   End If
 End Sub

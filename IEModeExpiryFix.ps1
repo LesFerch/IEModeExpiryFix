@@ -13,17 +13,59 @@
 
 #How to use:
 
-#1. Add your IE Mode pages in Microsoft Edge (or add them to the $AddPages variable below)
+#1. Add your IE Mode pages in Microsoft Edge
+#   (or add them to the $AddPages variable below or add them via an INI file)
 #2. Close Microsoft Edge (if open)
 #3. Run this script
 
 #Repeat the above steps to add more IE Mode pages
 
-$Version = '1.1.3'
+#Variables are read from an INI file if the INI file name is provided as a parameter on the command line.
+#INI file settings override settings supplied directly in the script.
 
+Param (
+  $INIFile = ''
+)
+
+$Version = '1.2.0'
+
+$invoc = $MyInvocation.InvocationName
+
+$Silent = $False #Change to True for no prompts and no report.
+
+Function ExitScript {
+  If (-Not $Silent) {
+    Write-Host $MyLog
+    #Pause if launched via right-click
+    If ($invoc -eq '&') {
+      Read-Host "Press Enter to close window"
+    }
+  }
+  Exit
+}
+
+Function LogMsg($Msg) {
+  $Script:MyLog = "$MyLog$Msg`r`n`r`n"
+}
+
+if ($PSVersionTable.PSEdition -eq "Core") {
+  LogMsg "This script is not compatible with PowerShell Core. Please run it with PowerShell."
+  ExitScript
+}
+
+If ($ExecutionContext.SessionState.LanguageMode -eq "ConstrainedLanguage") {
+  LogMsg "This script cannot be run in constrained language mode."
+  ExitScript
+}
+
+If (-Not $Silent) {
+  try { $host.ui.RawUI.WindowTitle = "IEModeExpiryFix" }
+  catch { }
+}
+
+$AllUsers = $False #Set to True to process all user folders (typically used with SYSTEM account and $Silent = $True).
 $RemoveAll = $False #Set to True to remove all existing IE Mode pages.
 $Backup = $True #Set to False for no backup.
-$Silent = $False #Change to True for no prompts and no report.
 $ForceLowercase = $True #Force domain part of URL to be lowercase.
 $currentThread = [System.Threading.Thread]::CurrentThread
 $currentThread.CurrentCulture = "en-US" #Do NOT change unless you change the date format for "DateAdded" below.
@@ -54,6 +96,54 @@ $FindReplace = '' #Don't touch this!
 
 #$FindReplace = 'www.oops.com,www.correct.com|www.oops.net,www.correct.net'
 
+#Used to Read $INIfile contents
+Function Get-IniContent ($FilePath) {
+  $ini = @{}
+  Switch -regex -file $FilePath {
+    '^\[(.+)\]' # Section
+    {
+      $section = $matches[1]
+      $ini[$section] = @{}
+    }
+    '(.+?)\s*=(.*)' # Key
+    {
+      $name,$value = $matches[1..2]
+      $value = $value.Trim()
+      $v = $value.ToLower()
+      If (($v -eq '0') -Or ($v -eq 'false') -Or ($v -eq '$false')) {$value = $False}
+      If (($v -eq '1') -Or ($v -eq 'true') -Or ($v -eq '$true')) {$value = $True}
+      $ini[$section][$name] = $value
+    }
+  }
+  Return $ini
+}
+
+#Read variables from $INIFile (if provided on command line)
+If ($INIFile -ne '') {
+  Set-Location $PSScriptRoot
+  If (-Not(Test-Path -Path $INIFile)) {
+    LogMsg "File not found: $INIFile"
+    ExitScript
+  }
+  $iniContent = Get-INIContent $INIFile
+  $Silent = $iniContent['Options']['Silent']
+  $AllUsers = $iniContent['Options']['AllUsers']
+  $RemoveAll = $iniContent['Options']['RemoveAll']
+  $Backup = $iniContent['Options']['Backup']
+  $DateAdded = $iniContent['Content']['DateAdded']
+  $RemovePages = $iniContent['Content']['RemovePages']
+  $AddPages = $iniContent['Content']['AddPages']
+  $FindReplace = $iniContent['Content']['FindReplace']
+  If ($AllUsers -eq $Null) {$AllUsers = $False}
+  If ($RemoveAll -eq $Null) {$RemoveAll = $False}
+  If ($Backup -eq $Null) {$Backup = $True}
+  If ($Silent -eq $Null) {$Silent = $False}
+  If ($DateAdded -eq $Null) {$DateAdded = '10/28/2099 10:00:00 PM'}
+  If ($RemovePages -eq $Null) {$RemovePages = ''}
+  If ($AddPages -eq $Null) {$AddPages = ''}
+  If ($FindReplace -eq $Null) {$FindReplace = ''}
+}
+
 #Convert variable lists to arrays
 #Do NOT edit any of the variables below!
 #Edits are done using the commented variables above!
@@ -70,14 +160,17 @@ $EdgeDateAdded = "$EdgeDateAdded".Substring(0,17)
 
 #Erase one or more lines from the console window
 Function Clear-Lines ($Count) {
-  $CurrentLine  = $Host.UI.RawUI.CursorPosition.Y
-  $ConsoleWidth = $Host.UI.RawUI.BufferSize.Width
-  $i = 1
-  For ($i; $i -le $Count; $i++) {
-    [Console]::SetCursorPosition(0,($CurrentLine - $i))
-    [Console]::Write("{0,-$ConsoleWidth}" -f " ")
+  try {
+    $CurrentLine  = $Host.UI.RawUI.CursorPosition.Y
+    $ConsoleWidth = $Host.UI.RawUI.BufferSize.Width
+    $i = 1
+    For ($i; $i -le $Count; $i++) {
+      [Console]::SetCursorPosition(0,($CurrentLine - $i))
+      [Console]::Write("{0,-$ConsoleWidth}" -f " ")
+    }
+    [Console]::SetCursorPosition(0,($CurrentLine - $Count))
   }
-  [Console]::SetCursorPosition(0,($CurrentLine - $Count))
+  catch { }
 }
 
 #Display list of actions to be performed
@@ -109,11 +202,6 @@ If (-Not $Silent) {Clear-Lines 2}
 Stop-Process -Force -ErrorAction SilentlyContinue -ProcessName MSEdge
 
 #Functions defined below. Scroll down to see remaining main code.
-
-#Add a message to the $MyLog variable
-Function LogMsg($Msg) {
-  $Script:MyLog = "$MyLog$Msg`r`n`r`n"
-}
 
 #Check $URL for too many slashes in prefix
 Function BadURL($URL) {
@@ -258,28 +346,42 @@ Function EditProfile {
 
 #Process profiles in all known Edge profile folders
 Function ProcessProfiles($ProfileFolder) {
-  $EdgeData = "$Env:LocalAppData\Microsoft\$ProfileFolder\User Data\"
-  If (Test-Path -Path $EdgeData) {
-    Get-ChildItem $EdgeData -Directory | ForEach-Object {
-      $Script:PrefsFile = "$EdgeData$_\Preferences"
-      If (Test-Path -Path $PrefsFile) {EditProfile}
+  $EdgeData = "$ProfileFolder\User Data\"
+  try {
+    If (Test-Path -Path $EdgeData -ErrorAction Stop) {
+      Get-ChildItem $EdgeData -Directory | ForEach-Object {
+        $Script:PrefsFile = "$EdgeData$_\Preferences"
+        If (Test-Path -Path $PrefsFile) {EditProfile}
+      }
     }
   }
+  catch {
+    LogMsg $EdgeData
+    LogMsg "Insufficient access rights"
+  }
+}
+
+Function ProcessUserProfiles($Path) {
+  $Path = "$Path\AppData\Local\Microsoft"
+  ProcessProfiles "$Path\Edge" #For released Edge profile
+  ProcessProfiles "$Path\Edge Beta" #For Beta Edge profile
+  ProcessProfiles "$Path\Edge Dev" #For Dev Edge profile
+  ProcessProfiles "$Path\Edge SxS" #For Canary Edge profile
 }
 
 #Main code continues here
 
 LogMsg "Profiles processed:"
 
-ProcessProfiles 'Edge' #For released Edge profile
-ProcessProfiles 'Edge Beta' #For Beta Edge profile
-ProcessProfiles 'Edge Dev' #For Dev Edge profile
-ProcessProfiles 'Edge SxS' #For Canary Edge profile
-
-If (-Not $Silent) {
-  Write-Host $MyLog
-  #Pause if launched via right-click
-  If ($MyInvocation.InvocationName -eq '&') {
-    Read-Host "Press Enter to close window"
+If ($AllUsers) {
+  $usersPath = (Get-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\ProfileList").ProfilesDirectory
+  $folders = Get-ChildItem -Path $usersPath -Directory
+  $folders | ForEach-Object {
+    ProcessUserProfiles $_.FullName
   }
 }
+Else {
+  ProcessUserProfiles $Env:UserProfile
+}
+
+ExitScript
