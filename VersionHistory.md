@@ -12,7 +12,7 @@ Added the LaunchIE.vbs and LaunchIE.js scripts to provide an alternative solutio
 
 ## 1.1.2
 
-Added -AsHashTable for PowerShell 6 and -ErrorAction SilentlyContinue for PowerShell 5 for (probably rare) situation of two keys in Preferences JSON file being identical other than case.
+Added error check for rare situation where two keys in Preferences JSON file being identical other than case.
 
 Fixed bug in IEModeExpiryFix.vbs that caused AddPages to not work for a URL that was already located elsewhere in the Preferences file.
 
