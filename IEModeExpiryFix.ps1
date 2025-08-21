@@ -325,7 +325,7 @@ Function EditProfile {
   AddEntries
 
   #Set "Allow pages to be reloaded in Internet Explorer mode" to "Allow"
-  $oData.dual_engine.consumer_mode | Add-Member -NotePropertyName 'enabled_state' -NotePropertyValue 1 -Force
+  $oData.dual_engine.consumer_mode | Add-Member -NotePropertyName 'enabled_state' -NotePropertyValue 1 -Force -ErrorAction SilentlyContinue
   
   $OriginalData = $Data.Trim()
 
